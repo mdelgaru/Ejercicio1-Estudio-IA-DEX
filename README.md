@@ -6,6 +6,12 @@ Aplicación Android nativa desarrollada en Kotlin que consume la API de PokéAPI
 
 Esta aplicación es un ejercicio de desarrollo móvil que implementa una Pokédex funcional siguiendo los principios de Clean Architecture. Permite explorar el mundo Pokémon navegando por un listado paginado y consultando información detallada de cada Pokémon.
 
+## 🎬 Demo
+
+https://github.com/mdelgaru/Ejercicio1-Estudio-IA-DEX/assets/demo.mp4
+
+> 📹 Video demostrativo mostrando la navegación completa: listado paginado de Pokémon, visualización de detalles, estados de carga y manejo de errores.
+
 ## ✨ Características Principales
 
 - 📱 Interfaz moderna desarrollada con Jetpack Compose
