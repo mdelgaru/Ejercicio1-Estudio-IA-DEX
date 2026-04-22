@@ -4,13 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.ejercicio1_estudio_ia_dex.presentation.NavRoutes
+import com.example.ejercicio1_estudio_ia_dex.presentation.detail.PokemonDetailScreen
+import com.example.ejercicio1_estudio_ia_dex.presentation.detail.PokemonDetailViewModel
+import com.example.ejercicio1_estudio_ia_dex.presentation.detail.PokemonDetailViewModelFactory
+import com.example.ejercicio1_estudio_ia_dex.presentation.list.PokemonListScreen
+import com.example.ejercicio1_estudio_ia_dex.presentation.list.PokemonListViewModel
 import com.example.ejercicio1_estudio_ia_dex.ui.theme.Ejercicio1EstudioIADEXTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +26,45 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Ejercicio1EstudioIADEXTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    val navController = rememberNavController()
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = NavRoutes.POKEMON_LIST
+                    ) {
+                        composable(route = NavRoutes.POKEMON_LIST) {
+                            val listViewModel: PokemonListViewModel = viewModel()
+                            PokemonListScreen(
+                                viewModel = listViewModel,
+                                onPokemonClick = { pokemonId ->
+                                    navController.navigate("${NavRoutes.POKEMON_DETAIL}/$pokemonId")
+                                }
+                            )
+                        }
+
+                        composable(
+                            route = "${NavRoutes.POKEMON_DETAIL}/{pokemonId}",
+                            arguments = listOf(
+                                navArgument("pokemonId") {
+                                    type = NavType.IntType
+                                }
+                            )
+                        ) { backStackEntry ->
+                            val detailViewModel: PokemonDetailViewModel = viewModel(
+                                factory = PokemonDetailViewModelFactory(
+                                    backStackEntry.savedStateHandle
+                                )
+                            )
+
+                            PokemonDetailScreen(
+                                viewModel = detailViewModel,
+                                onBack = { navController.popBackStack() }
+                            )
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Ejercicio1EstudioIADEXTheme {
-        Greeting("Android")
     }
 }
